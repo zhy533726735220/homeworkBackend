@@ -1,0 +1,5 @@
+/.idea/
+/target/
+homeworkBackend.iml
+/src/main/resources/database.properties
+/test/

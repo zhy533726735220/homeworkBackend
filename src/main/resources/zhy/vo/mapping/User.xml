@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--在每一个配置文件之中实际上都需要有一个独立的命名空间(名字，日后引用就需要此名称)-->
+<!--考虑到后续要进行相关的日志的配置操作，所以对于这个资源文件都建议设置一个包名称-->
+<!--命名空间(Name Space)，所以习惯"包名称+VO名称+NS"-->
+<!--<mapper namespace="vo.mapping.NewsNS">-->
+<mapper namespace="com.zhy.dao.IUserDAO">
+
+    <select id="findById" parameterType="User" resultType="java.lang.String">
+        SELECT openid FROM homework WHERE openid=#{openid}
+    </select>
+    
+    <insert id="insertUser" parameterType="User">
+        INSERT INTO homework(openid, wxName, realName, avatar, state) VALUES (#{openid}, #{wxName}, #{realName}, #{avatar}, #{state})
+    </insert>
+</mapper>
