@@ -19,6 +19,6 @@ public class ServiceProxy {
         // 自己来处理参数内容
 //        Object obj = point.proceed(new Object[] {"mldnjava"} ) ;
         System.out.println("【*** AFTER ***】返回结果：" + obj);
-        return true ;
+        return obj ;
     }
 }

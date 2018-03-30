@@ -15,7 +15,7 @@
 
 	<aop:aspectj-autoproxy/>
 	<context:annotation-config/>
-	<context:component-scan base-package="com.zhy.service.impl, com.zhy.dao.impl"/>
+	<context:component-scan base-package="com.zhy.service.impl"/>
 	<cnntext:component-scan base-package="com.zhy"/>
 	<!--在applicationContext.xml文件之中引入其他的配置文件项-->
 	<context:property-placeholder location="classpath:database.properties"/>
@@ -61,7 +61,7 @@
 	<!-- 配置自动创建数据层实现类的开发包 -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<!-- 定义该包中的访问为自动配置实现 -->
-		<property name="basePackage" value="com.zhy.vo"/>
+		<property name="basePackage" value="com.zhy.dao"/>
 		<property name="sqlSessionFactoryBeanName" value="sessionFactory"/>
 	</bean>
 

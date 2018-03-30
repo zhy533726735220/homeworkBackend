@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhy.dao.IAdminDAO">
+
+    <resultMap id="HomeworkDetailsMap" type="Homework">
+        <id column="id" property="id"/>
+        <result column="openid" property="openid"/>
+        <result column="homeworkType" property="homeworkType"/>
+        <result column="content" property="content"/>
+        <result column="submitTime" property="submitTime"/>
+        <result column="updateTime" property="updateTime"/>
+        <association property="user" javaType="User" column="openid" select="com.zhy.dao.IUserDAO.findByOpenid"/>
+    </resultMap>
+
+    <!--查看当天报课情况-->
+    <select id="selectStudyCondition" parameterType="Map" resultMap="HomeworkDetailsMap">
+        SELECT openid, homeworkType, content,submitTime, updateTime FROM homework WHERE submitTime=#{submitTime} AND homeworkType=#{homeworkType}
+    </select>
+
+    <select id="selectUser" resultType="User">
+        SELECT openid, wxName, realName, avatar FROM user WHERE state=1
+    </select>
+</mapper>

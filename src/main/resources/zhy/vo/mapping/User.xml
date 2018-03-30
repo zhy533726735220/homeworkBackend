@@ -1,18 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!--在每一个配置文件之中实际上都需要有一个独立的命名空间(名字，日后引用就需要此名称)-->
-<!--考虑到后续要进行相关的日志的配置操作，所以对于这个资源文件都建议设置一个包名称-->
-<!--命名空间(Name Space)，所以习惯"包名称+VO名称+NS"-->
-<!--<mapper namespace="vo.mapping.NewsNS">-->
 <mapper namespace="com.zhy.dao.IUserDAO">
 
-    <select id="findById" parameterType="User" resultType="java.lang.String">
-        SELECT openid FROM homework WHERE openid=#{openid}
-    </select>
-    
+    <resultMap id="UserHomeworkType" type="User">
+        <id column="openid" property="openid"/>
+        <result column="wxName" property="wxName"/>
+        <result column="realName" property="realName"/>
+        <result column="avatar" property="avatar"/>
+        <collection property="HomeworkTypeList" column="openid" javaType="java.util.List" ofType="HomeworkType" select="com.zhy.dao.IHomeworkTypeDAO.findAllByUser"/>
+    </resultMap>
+
+    <!--加入新的用户-->
     <insert id="insertUser" parameterType="User">
-        INSERT INTO homework(openid, wxName, realName, avatar, state) VALUES (#{openid}, #{wxName}, #{realName}, #{avatar}, #{state})
+        INSERT INTO user(openid, updateTime, state) VALUES (#{openid}, #{updateTime}, 0)
     </insert>
+
+    <!--更新用户信息-->
+    <update id="updateUser" parameterType="User">
+        UPDATE user
+          SET
+            <if test="realName != null and realName !='' ">
+              realName = #{realName}
+            </if>
+            <if test="wxName != null and wxName !='' ">
+              wxName = #{wxName}, avatar = #{avatar}
+            </if>
+            <if test="admin != null and admin != '' ">
+              admin = #{admin}
+            </if>
+        WHERE openid = #{openid}
+    </update>
+
+    <!--根据用户的openid查询用户的详细信息和功课类型-->
+    <select id="findUserDetailsByopenid" parameterType="String" resultMap="UserHomeworkType">
+        SELECT openid, wxName, realName, avatar FROM user WHERE openid=#{openid} AND state=1
+    </select>
+
+    <!--被HomeworkType.xml -> findHomeworkTypeDetailsBytypeId 的引用-->
+    <!--根据typeId查询报课所有的类型下拥有的所有用户-->
+    <select id="findAllByHomeworkType" parameterType="String" resultType="User">
+        SELECT openid, wxName, realName, avatar FROM user
+        WHERE openid IN (
+        SELECT openid FROM user_homeworkType WHERE typeId=#{typeId}
+        )
+    </select>
+
+    <!--被Admin.xml -> selectStudyCondition 引用-->
+    <select id="findByOpenid" parameterType="String" resultType="User">
+        SELECT openid, wxName, realName, avatar FROM user WHERE openid=#{openid}
+    </select>
+
 </mapper>

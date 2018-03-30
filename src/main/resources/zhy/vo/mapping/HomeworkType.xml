@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhy.dao.IHomeworkTypeDAO">
+
+    <resultMap id="HomeworkTypeUser" type="HomeworkType">
+        <id column="typeId" property="typeId"/>
+        <result column="typeContent" property="typeContent"/>
+        <collection property="userList" column="typeId" javaType="java.util.List" ofType="User" select="com.zhy.dao.IUserDAO.findAllByHomeworkType"/>
+    </resultMap>
+
+    <!--添加报课类型-->
+    <insert id="insertHomeworkType" parameterType="HomeworkType">
+        INSERT INTO homeworkType(typeContent) VALUES (#{typeContent})
+    </insert>
+
+    <!--查询所有的课程类型-->
+    <select id="selectHomeworkType" parameterType="HomeworkType" resultType="HomeworkType">
+        SELECT typeId, typeContent FROM homeworkType
+        <where>
+            <if test="typeContent != null">
+                typeContent=#{typeContent}
+            </if>
+            <if test="typeId != null">
+                typeId=#{typeId}
+            </if>
+        </where>
+    </select>
+    
+    <select id="findTypeContentBytypeId" parameterType="String" resultType="HomeworkType">
+        SELECT typeId FROM homeworkType WHERE typeContent=#{typeContent}
+    </select>
+
+    <!--根据报课类型的typeId查询报课所有类型下的所有用户-->
+    <select id="findHomeworkTypeDetailsBytypeId" parameterType="String" resultMap="HomeworkTypeUser">
+        SELECT typeId, typeContent FROM homeworkType WHERE typeId=#{typeId}
+    </select>
+
+    <!--被User.xml -> findUserDetailsByopenid的引用-->
+    <!--根据openid查询用户拥有的功课类型-->
+    <select id="findAllByUser" parameterType="String" resultType="HomeworkType">
+        SELECT typeId, typeContent FROM homeworkType
+        WHERE typeId IN (
+            SELECT typeId FROM user_homeworkType WHERE openid=#{openid}
+        )
+    </select>
+
+</mapper>
